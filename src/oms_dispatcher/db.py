@@ -47,13 +47,18 @@ class DB:
     async def mark_submitted(
         self, intent_id: UUID, broker_order_id: str
     ) -> None:
+        # Race: WS user-data ORDER_TRADE_UPDATE may arrive at binance-adapter
+        # BEFORE this UPDATE lands (especially on testnet where MARKET orders
+        # fill instantly). If we filter `status='queued'`, that path matches 0
+        # rows and broker_order_id is lost. Use COALESCE so we always fill in
+        # broker_order_id + submitted_at, but only flip status if still queued.
         await self.pool.execute(
             """
             UPDATE oms_intents
-            SET status = 'submitted',
-                broker_order_id = $2,
-                submitted_at = now()
-            WHERE id = $1 AND status = 'queued'
+            SET status = CASE WHEN status = 'queued' THEN 'submitted' ELSE status END,
+                broker_order_id = COALESCE(broker_order_id, $2),
+                submitted_at = COALESCE(submitted_at, now())
+            WHERE id = $1
             """,
             intent_id,
             broker_order_id,

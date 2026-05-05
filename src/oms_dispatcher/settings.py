@@ -8,11 +8,13 @@ class Settings(BaseSettings):
     aicore_db_url: str
 
     # Adapter URLs by venue. Override via env: ADAPTER_URL_BINANCE=http://...
-    # Comma-separated venue=url pairs in ADAPTER_URLS for bulk override.
     adapter_url_binance: str = "http://binance-adapter:8004"
-    adapter_url_alpaca: str = "http://alpaca-adapter:8005"  # Phase 5
-    adapter_url_polymarket: str = "http://poly-adapter:8006"  # Phase 7
-    adapter_url_oanda: str = "http://oanda-adapter:8007"  # Phase 4
+    # Phase 5 — Alpaca adapter not yet built; placeholder URL.
+    adapter_url_alpaca: str = "http://alpaca-adapter:8009"
+    # Phase 7 — Polymarket dry-run adapter live as of 2026-05-06.
+    adapter_url_polymarket: str = "http://poly-adapter:8008"
+    # Phase 4 — OANDA adapter not yet built; placeholder URL.
+    adapter_url_oanda: str = "http://oanda-adapter:8010"
 
     # Polling cadence
     poll_interval_sec: float = 1.0

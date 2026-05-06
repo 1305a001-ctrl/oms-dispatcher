@@ -1,6 +1,6 @@
 services:
   oms-dispatcher:
-    build: .
+    image: ghcr.io/1305a001-ctrl/oms-dispatcher:latest
     container_name: oms-dispatcher
     restart: unless-stopped
     env_file:
